@@ -1,0 +1,1693 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "2025-05-06",
+    "title": "tm17-restaurant_api-dev1"
+  },
+  "host": "retaurantapi-run8team17-sb-dev.development.krci-dev.cloudmentor.academy",
+  "schemes": [
+    "https"
+  ],
+  "tags": [
+    {
+      "description": "",
+      "name": "Auth"
+    },
+    {
+      "description": "",
+      "name": "Dishes"
+    },
+    {
+      "description": "",
+      "name": "Locations"
+    },
+    {
+      "description": "",
+      "name": "Bookings"
+    },
+    {
+      "description": "",
+      "name": "Employee"
+    },
+    {
+      "description": "",
+      "name": "Reservations"
+    },
+    {
+      "description": "",
+      "name": "Profile"
+    },
+    {
+      "description": "",
+      "name": "Feedbacks"
+    }
+  ],
+  "paths": {
+    "/auth/sign-in": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "authenticates users and grants them access to the application (Sprint 1: User Story 2)",
+        "description": "This method authenticates a user and returns an access token.",
+        "operationId": "login",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User parameters",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SignInRequest"
+            },
+            "x-examples": {
+              "application/json": {
+                "email": "jhon_smith@example.com",
+                "password": "Y2kjqKHX"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/SignInResponse"
+            },
+            "examples": {
+              "application/json": {
+                "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqaG9uX3NtaXRoQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzMwMTYyMjYxLCJpYXQiOjE3MzAxMjYyNjEsImp0aSI6IjNkMGQ0OThhLTQxYzEtNDk1NS1hODc3LWI3MTZlMzIyNzYzZiJ9.z0FS_3BBz2UlbE8doPx24i6IWZO6TBTpbG5jtadlvFM",
+                "username": "jhon Smith",
+                "role": "CLIENT"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/sign-up": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "creates a new user account (Sprint 1: User Story 1, User Story 3)",
+        "description": "This method registers a new user and returns their access token.",
+        "operationId": "signup",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User parameters",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/SignUpRequest"
+            },
+            "x-examples": {
+              "application/json": {
+                "firstName": "John",
+                "lastName": "Smith",
+                "email": "jhon_smith@example.com",
+                "password": "Y2kjqKHX"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/SignupSuccessResponse"
+            },
+            "examples": {
+              "application/json": {
+                "message": "User registered successfully"
+              }
+            }
+          },
+          "409": {
+            "description": "Failed operation",
+            "schema": {
+              "$ref": "#/definitions/SignupFailResponse"
+            },
+            "examples": {
+              "application/json": {
+                "message": "A user with this email address already exists."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bookings/tables": {
+      "get": {
+        "tags": [
+          "Bookings"
+        ],
+        "summary": "returns a list of available tables (Sprint 1: User Story 5)",
+        "description": "This endpoint returns a list of tables available for booking",
+        "operationId": "getTables",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "description": "Location ID",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Date",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "time",
+            "in": "query",
+            "description": "Time",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "guests",
+            "in": "query",
+            "description": "Number of guests",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TableResponse"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bookings/client": {
+      "post": {
+        "tags": [
+          "Bookings"
+        ],
+        "summary": "orders a table by client (Sprint 1: User Story 6)",
+        "description": "This endpoint books a table",
+        "operationId": "bookTable",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Reservation request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ReservationRequest"
+            }
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ReservationResponse"
+            }
+          }
+        },
+        "x-requestBody": {
+          "description": "Reservation request",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/ReservationRequest"
+              },
+              "example": {
+                "locationId": "672846d5c951184d705b65d7",
+                "tableId": "1",
+                "date": "2021-12-31",
+                "guestsNumber": "4",
+                "timeFrom": "12:15",
+                "timeTo": "14:00"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bookings/waiter": {
+      "post": {
+        "tags": [
+          "Bookings"
+        ],
+        "summary": "orders a table by waiter (Sprint 2: User Story 7)",
+        "description": "This endpoint books a table",
+        "operationId": "bookTable",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Reservation request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ReservationRequest"
+            },
+            "x-examples": {
+              "Reservation request": {
+                "clientType": "CUSTOMER",
+                "clientEmail": "johndoe@epam.com",
+                "date": "2021-10-10",
+                "guestsNumber": "4",
+                "locationId": "582846d5c951184d705b65d1",
+                "tableNumber": "1",
+                "timeFrom": "12:00",
+                "timeTo": "14:00"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/ReservationResponse"
+            },
+            "examples": {
+              "application/json": {
+                "date": "2021-12-31",
+                "feedbackId": "",
+                "guestsNumber": "4",
+                "id": "672846d5c951184d705b65d7",
+                "locationAddress": "123 Main St",
+                "preOrder": "4",
+                "status": "in-progress",
+                "tableNumber": "",
+                "timeSlot": "12:15-14:00",
+                "userInfo": "Customer Jasmine Smith"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dishes": {
+      "get": {
+        "tags": [
+          "Dishes"
+        ],
+        "summary": "returns list of dishes (Sprint 2: User Story 9)",
+        "description": "This endpoint returns a list of dishes based on the filter criteria",
+        "operationId": "getMenu",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "dishType",
+            "in": "query",
+            "description": "Type of dish",
+            "required": false,
+            "type": "string",
+            "x-examples": {
+              "Appetizers": {
+                "description": "Appetizer dish",
+                "value": "APPETIZER"
+              },
+              "Desserts": {
+                "description": "Dessert dish",
+                "value": "DESSERT"
+              },
+              "Main courses": {
+                "description": "Main course dish",
+                "value": "MAIN_COURSE"
+              }
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort by",
+            "required": false,
+            "type": "string",
+            "x-examples": {
+              "Popularity Ascending": {
+                "description": "Popularity ascending sort",
+                "value": "popularity,asc"
+              },
+              "Popularity Descending": {
+                "description": "Popularity descending sort",
+                "value": "popularity,desc"
+              },
+              "Price Ascending": {
+                "description": "Price ascending sort",
+                "value": "price,asc"
+              },
+              "Price Descending": {
+                "description": "Price descending sort",
+                "value": "price,desc"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/MenuResponse"
+            },
+            "examples": {
+              "application/json": {
+                "content": [
+                  {
+                    "id": "Fresh Strawberry Mint Salad",
+                    "name": "Fresh Strawberry Mint Salad",
+                    "previewImageUrl": "https://green-and-tasty.s3.eu-central-1.amazonaws.com/img/ff7863bf-63eb-4f2e-8041-75a81507acff.jpg",
+                    "price": "$12",
+                    "state": "On stop",
+                    "weight": "430 g"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dishes/popular": {
+      "get": {
+        "tags": [
+          "Dishes"
+        ],
+        "summary": "returns popular dishes (Sprint 1: User Story 4)",
+        "description": "This endpoint returns a list of popular dishes",
+        "operationId": "getDishes",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/DishResponse"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dishes/{id}": {
+      "get": {
+        "tags": [
+          "Dishes"
+        ],
+        "summary": "returns dish by id (Sprint 2: User Story 9)",
+        "description": "This endpoint returns a dish by id",
+        "operationId": "getDish",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the dish",
+            "required": true,
+            "type": "string",
+            "example": "322846d5c951184d705b65d2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/DishExtendedResponse"
+            },
+            "examples": {
+              "application/json": {
+                "id": "322846d5c951184d705b65d2",
+                "name": "Fresh Strawberry Mint Salad",
+                "calories": "503 kcal",
+                "carbohydrates": "30-35 g",
+                "description": "Fresh Strawberry Mint Salad is a delicious and healthy salad that is perfect for a light lunch or dinner. It is made with fresh strawberries, mint, and a tangy vinaigrette dressing. This salad is perfect for a summer picnic or barbecue, and is sure to be a hit with your family and friends.",
+                "dishType": "APPETIZERS",
+                "fats": "33-35 g",
+                "imageUrl": "https://green-and-tasty.s3.eu-central-1.amazonaws.com/img/ff7863bf-63eb-4f2e-8041-75a81507acff.jpg",
+                "price": "$12",
+                "proteins": "18-30 g",
+                "state": "On Stop",
+                "vitamins": "Vitamin C, Vitamin A, calcium and iron",
+                "weight": "430 g"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/feedbacks": {
+      "post": {
+        "tags": [
+          "Feedbacks"
+        ],
+        "summary": "creates feedback (Sprint 2: User Story 15)",
+        "description": "this endpoint is used to create feedback",
+        "operationId": "createFeedback",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Reservation request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateFeedBackResponse"
+            }
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "201": {
+            "description": "Feedback has been created",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "application/json": "Feedback has been created"
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Feedbacks"
+        ],
+        "description": "this endpoint is used to modify feedback",
+        "operationId": "modifyFeedback",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Modify feedback request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateFeedBackResponse"
+            },
+            "examples": {
+              "application/json": {
+                "cuisineComment": "Good food",
+                "cuisineRating": "4",
+                "reservationId": "672846d5c951184d705b65d7",
+                "serviceComment": "Good service, good atmosphere",
+                "serviceRating": "5"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Feedback has been modified",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "application/json": "Feedback has been modified"
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/locations": {
+      "get": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "returns list of locations (Sprint 1: User Story 4)",
+        "description": "This endpoint returns a list of locations",
+        "operationId": "getLocations",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/LocationResponse"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/locations/select-options": {
+      "get": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Returns locations info for select (Sprint 1: User Story 5)",
+        "description": "This endpoint returns a list of short location details, used in dropdowns",
+        "operationId": "getLocationOptions",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/LocationBrief"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/locations/{id}/feedbacks": {
+      "get": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Returns feedbacks from a location (Sprint 1: User Story 4)",
+        "description": "This endpoint returns feedbacks for a restaurant location",
+        "operationId": "getFeedbacks",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the restaurant location",
+            "required": true,
+            "type": "string",
+            "example": "a5d95674-e4aa-43be-8d50-7f26bcc17da0"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Type of feedback",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "CUISINE_EXPERIENCE",
+              "SERVICE_QUALITY"
+            ],
+            "example": "CUISINE_EXPERIENCE"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Zero-based page index (0..N)",
+            "required": false,
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "The size of the page to be returned",
+            "required": false,
+            "type": "integer",
+            "minimum": 1,
+            "default": 20
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/PageFeedbackResponse"
+            }
+          }
+        }
+      }
+    },
+    "/locations/{id}/speciality-dishes": {
+      "get": {
+        "tags": [
+          "Locations"
+        ],
+        "summary": "Returns speciality dishes for a certain location (Sprint 1: User Story 4)",
+        "description": "This endpoint returns speciality dishes for a restaurant location",
+        "operationId": "getSpecialityDishes",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the restaurant location",
+            "required": true,
+            "type": "string",
+            "example": "672846d5c951184d705b65d7"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/DishResponse"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reservations": {
+      "get": {
+        "tags": [
+          "Reservations"
+        ],
+        "summary": "returns reservations (Sprint 1: User Story 6)",
+        "description": "This endpoint is used to get a list of reservations of the logged in user",
+        "operationId": "getReservations",
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ReservationResponse"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/reservations/waiter/{id}": {
+      "delete": {
+        "tags": [
+          "Reservations"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "options": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Headers": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Reservations"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/reservations/{id}": {
+      "delete": {
+        "tags": [
+          "Reservations"
+        ],
+        "summary": "cancels reservation (Sprint 1: User Story 6)",
+        "description": "This endpoint is used to cancel a reservation",
+        "operationId": "deleteReservation",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Reservation ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/users/profile": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "returns user profile",
+        "description": "This endpoint is used to get the profile of the logged in user",
+        "operationId": "getProfile",
+        "produces": [
+          "*/*"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/GetProfileResponse"
+            },
+            "examples": {
+              "*/*": {
+                "firstName": "John",
+                "imageUrl": "https://green-and-tasty.s3.eu-central-1.amazonaws.com/img/ff7863bf-63eb-4f2e-8041-75a81507acff.jpg",
+                "lastName": "Doe"
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Update user profile",
+        "description": "This endpoint is used to update the profile of the logged in user",
+        "operationId": "updateProfile",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Valid update profile body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "base64encodedImage": {
+                  "type": "string",
+                  "example": "iVBORw0KGgoAAAANSUhEUgAAAQoAAAFmCAMAAACiIyTaAAABv1BMVEUAAAB5S0dJ..."
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "message": "Profile has been successfully updated"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UpdateProfileResponse"
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/users/profile/password": {
+      "put": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "changes password  (Sprint 2: User Story 14 Optional)",
+        "description": "This endpoint is used to change the password of the logged in user",
+        "operationId": "changePassword",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Change password request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateProfileRequestBody"
+            },
+            "x-examples": {
+              "Valid update profile body": {
+                "newPassword": "h38c6ls75jd9",
+                "oldPassword": "g4l9x7g8k3h6"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Password has been successfully updated",
+            "schema": {
+              "$ref": "#/definitions/ChangePasswordResponse"
+            },
+            "examples": {
+              "application/json": {
+                "message": "Password has been successfully updated"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/reservations/waiters": {
+      "get": {
+        "tags": [
+          "Reservations"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "options": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "200 response",
+            "schema": {
+              "$ref": "#/definitions/Empty"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Headers": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Empty": {
+      "type": "object",
+      "title": "Empty Schema"
+    },
+    "LeaveFeedbackRequest": {
+      "type": "object",
+      "properties": {
+        "reservationId": {
+          "type": "string"
+        },
+        "serviceRating": {
+          "type": "string"
+        },
+        "serviceComment": {
+          "type": "string"
+        },
+        "cuisineRating": {
+          "type": "string"
+        },
+        "cuisineComment": {
+          "type": "string"
+        }
+      }
+    },
+    "ReservationRequest": {
+      "type": "object",
+      "properties": {
+        "locationId": {
+          "type": "string"
+        },
+        "tableNumber": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "guestsNumber": {
+          "type": "string"
+        },
+        "timeFrom": {
+          "type": "string"
+        },
+        "timeTo": {
+          "type": "string"
+        }
+      }
+    },
+    "ReservationResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "locationAddress": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "timeSlot": {
+          "type": "string"
+        },
+        "preOrder": {
+          "type": "string"
+        },
+        "guestsNumber": {
+          "type": "string"
+        },
+        "feedbackId": {
+          "type": "string"
+        }
+      }
+    },
+    "SignupSuccessResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "SignupFailResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "SignUpRequest": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "SignInRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "SignInResponse": {
+      "type": "object",
+      "properties": {
+        "accessToken": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        }
+      }
+    },
+    "DishResponse": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "price": {
+          "type": "string"
+        },
+        "weight": {
+          "type": "string"
+        },
+        "imageUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "LocationResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "totalCapacity": {
+          "type": "string"
+        },
+        "averageOccupancy": {
+          "type": "string"
+        },
+        "imageUrl": {
+          "type": "string"
+        },
+        "rating": {
+          "type": "string"
+        }
+      }
+    },
+    "FeedbackResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "rate": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        },
+        "userName": {
+          "type": "string"
+        },
+        "userAvatarUrl": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "locationId": {
+          "type": "string"
+        }
+      }
+    },
+    "PageFeedbackResponse": {
+      "type": "object",
+      "properties": {
+        "totalPages": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "totalElements": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "content": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FeedbackResponse"
+          }
+        },
+        "number": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sort": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SortObject"
+          }
+        },
+        "first": {
+          "type": "boolean"
+        },
+        "last": {
+          "type": "boolean"
+        },
+        "numberOfElements": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageable": {
+          "$ref": "#/definitions/PageableObject"
+        },
+        "empty": {
+          "type": "boolean"
+        }
+      }
+    },
+    "PageableObject": {
+      "type": "object",
+      "properties": {
+        "offset": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "sort": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SortObject"
+          }
+        },
+        "paged": {
+          "type": "boolean"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageNumber": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "unpaged": {
+          "type": "boolean"
+        }
+      }
+    },
+    "SortObject": {
+      "type": "object",
+      "properties": {
+        "direction": {
+          "type": "string"
+        },
+        "nullHandling": {
+          "type": "string"
+        },
+        "ascending": {
+          "type": "boolean"
+        },
+        "property": {
+          "type": "string"
+        },
+        "ignoreCase": {
+          "type": "boolean"
+        }
+      }
+    },
+    "TableResponse": {
+      "type": "object",
+      "properties": {
+        "locationId": {
+          "type": "string"
+        },
+        "locationAddress": {
+          "type": "string"
+        },
+        "tableNumber": {
+          "type": "string"
+        },
+        "capacity": {
+          "type": "string"
+        },
+        "availableSlots": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "LocationBrief": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        }
+      }
+    },
+    "CartResponse": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PreOrder"
+          }
+        }
+      }
+    },
+    "ChangePasswordResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateFeedBackResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateReportResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "DishExtendedResponse": {
+      "type": "object",
+      "properties": {
+        "calories": {
+          "type": "string"
+        },
+        "carbohydrates": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "dishType": {
+          "type": "string"
+        },
+        "fats": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "imageUrl": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "price": {
+          "type": "string"
+        },
+        "proteins": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "vitamins": {
+          "type": "string"
+        },
+        "weight": {
+          "type": "string"
+        }
+      }
+    },
+    "DishItem": {
+      "type": "object",
+      "properties": {
+        "dishId": {
+          "type": "string"
+        },
+        "dishImageUrl": {
+          "type": "string"
+        },
+        "dishName": {
+          "type": "string"
+        },
+        "dishPrice": {
+          "type": "string"
+        },
+        "dishQuantity": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "DishOrderResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "DishPreviewResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "previewImageUrl": {
+          "type": "string"
+        },
+        "price": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "weight": {
+          "type": "string"
+        }
+      }
+    },
+    "GetProfileResponse": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "imageUrl": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        }
+      }
+    },
+    "GetReportsResponse": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ReportResponse"
+          }
+        }
+      }
+    },
+    "MenuResponse": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DishPreviewResponse"
+          }
+        }
+      }
+    },
+    "PreOrder": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "dishItems": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DishItem"
+          }
+        },
+        "id": {
+          "type": "string"
+        },
+        "reservationId": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "SUBMITTED",
+            "IN_PROGRESS",
+            "CANCELLED"
+          ]
+        },
+        "timeSlot": {
+          "type": "string"
+        }
+      }
+    },
+    "ReportResponse": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "downloadLink": {
+          "type": "string"
+        },
+        "fromDateTime": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "toDateTime": {
+          "type": "string"
+        },
+        "waiterId": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateProfileRequestBody": {
+      "type": "object",
+      "properties": {
+        "base64encodedImage": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateProfileResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "VisitorFeedBackResponse": {
+      "type": "object",
+      "properties": {
+        "accessToken": {
+          "type": "string"
+        },
+        "reservationId": {
+          "type": "string"
+        },
+        "serviceRating": {
+          "type": "string"
+        },
+        "waiterImageUrl": {
+          "type": "string"
+        },
+        "waiterName": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "bearerAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\""
+    }
+  }
+}
+
